@@ -8,26 +8,28 @@ import DateTitle from "@/components/common/DateTitle";
 import Header from "@/components/common/Header";
 import "../../styles/global.css";
 
-// Your other code here...
-
 const Add: React.FC = () => {
-  // Your state and other logic here...
-
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Update the handleBack function here:
   const handleBack = (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.back();
   };
 
-  // Your other functions and logic here...
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    // Your submission logic here
+    // Don't forget to set loading back to false when done
+    setLoading(false);
+  };
 
   return (
     <main className="mx-6 mt-10 pb-8 lg:max-w-screen-md lg:mx-auto">
       <Header />
       <DateTitle />
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         {/* Your form and other elements here... */}
         <div className="flex justify-between mt-4 relative bottom-6 w-full -left-6 lg:max-w-screen-md lg:bottom-4 lg:relative lg:mx-auto">
           <Button
