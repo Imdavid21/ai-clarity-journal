@@ -20,7 +20,6 @@ interface Journal {
   date: string;
 }
 
-
 interface GroupedJournals {
   [year: string]: {
     [month: string]: Journal[];
@@ -37,37 +36,40 @@ const Entries: React.FC = () => {
   const [journals, setJournals] = useState<Journal[]>([]);
   const [groupedJournals, setGroupedJournals] = useState<GroupedJournals>({});
   const [toggleState, setToggleState] = useState<ToggleState>({});
-  const { userId } = useAuth();
 
   useEffect(() => {
-    if (userId) {
-      fetchJournals(userId);
-    }
-  }, [userId]);
+    fetchJournals();
+  }, []);
 
-  const fetchJournals = async (userId: string) => {
-    const response = await axios.get(`/api/users/${userId}/journals`);
-    const data: Journal[] = response.data;
-    if (data.length > 0) {
-      const sortedJournals = data
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .slice(0, 7);
-      setJournals(sortedJournals);
+  const fetchJournals = async () => {
+    try {
+      const response = await axios.get('/api/journals');
+      const data: Journal[] = response.data;
+      if (data.length > 0) {
+        const sortedJournals = data
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 7);
+        setJournals(sortedJournals);
 
-      const grouped = data.reduce((acc: GroupedJournals, journal) => {
-        const date = new Date(journal.date);
-        const year = date.getFullYear();
-        const month = date.toLocaleString("default", { month: "short" });
+        const grouped = data.reduce((acc: GroupedJournals, journal) => {
+          const date = new Date(journal.date);
+          const year = date.getFullYear().toString();
+          const month = date.toLocaleString("default", { month: "short" });
 
-        if (!acc[year]) acc[year] = {};
-        if (!acc[year][month]) acc[year][month] = [];
+          if (!acc[year]) acc[year] = {};
+          if (!acc[year][month]) acc[year][month] = [];
 
-        acc[year][month].push(journal);
-        return acc;
-      }, {});
+          acc[year][month].push(journal);
+          return acc;
+        }, {});
 
-      setGroupedJournals(grouped);
-    } else {
+        setGroupedJournals(grouped);
+      } else {
+        setJournals([]);
+        setGroupedJournals({});
+      }
+    } catch (error) {
+      console.error("Error fetching journals:", error);
       setJournals([]);
       setGroupedJournals({});
     }
