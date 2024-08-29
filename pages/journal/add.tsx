@@ -1,28 +1,56 @@
-"use client";
-import React, { useState, useEffect, useContext, ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
-import { JournalContext } from "../JournalContext.js";
-import Image from "next/image";
+import React, { useState, FormEvent } from "react";
+import { useRouter } from "next/router";
 import Button from "@/components/common/Button";
 import DateTitle from "@/components/common/DateTitle";
 import Header from "@/components/common/Header";
 import "../../styles/global.css";
 
+const initialValues = {
+  content: "",
+};
+
 const Add: React.FC = () => {
+  const [values, setValues] = useState(initialValues);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleBack = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBack = (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.back();
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // Your submission logic here
-    // Don't forget to set loading back to false when done
-    setLoading(false);
+
+    try {
+      const response = await fetch('/api/journal/entries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: values.content }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        router.push(`/journal/${data.id}/chat`);
+      } else {
+        console.error("Failed to create journal entry");
+      }
+    } catch (error) {
+      console.error("Error creating journal entry:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,7 +58,16 @@ const Add: React.FC = () => {
       <Header />
       <DateTitle />
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        {/* Your form and other elements here... */}
+        <div>
+          <h3 className="font-semibold">Journal</h3>
+          <textarea
+            className="border border-inherit rounded-lg h-64 w-full mt-2 px-4 py-2 max-w-prose"
+            placeholder="Write something here..."
+            onChange={handleInputChange}
+            value={values.content}
+            name="content"
+          ></textarea>
+        </div>
         <div className="flex justify-between mt-4 relative bottom-6 w-full -left-6 lg:max-w-screen-md lg:bottom-4 lg:relative lg:mx-auto">
           <Button
             buttonText="Cancel"
@@ -42,9 +79,8 @@ const Add: React.FC = () => {
           <Button
             buttonText={loading ? "Loading..." : "Next"}
             isPrimary={true}
-            handleClick={() => {}}
-            disabled={loading}
             type="submit"
+            disabled={loading}
           />
         </div>
       </form>
