@@ -1,34 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Header from "@/components/common/Header";
 import Button from "@/components/common/Button";
 import TabComponent from "@/components/common/TabComponent";
 import { formattedHaiku } from "@/utils/formatUtils";
-
 import "../../../../styles/global.css";
 
 const Summary = () => {
   const [journal, setJournal] = useState({});
   const [haiku, setHaiku] = useState("");
-
   const router = useRouter();
   const { journalId } = router.query;
-  const { userId } = useAuth();
+
+  const fetchJournal = useCallback(async () => {
+    if (!journalId) return;
+    const response = await fetch(`/api/journal/entries/${journalId}`);
+    const data = await response.json();
+    setJournal(data[0]);
+  }, [journalId]);
 
   useEffect(() => {
-    const fetchJournal = async (journalId) => {
-      const response = await fetch(
-        `/api/users/${userId}/journal/entries/${journalId}`
-      );
-      const data = await response.json();
-      setJournal(data[0]);
-    };
-
-    if (journalId) {
-      fetchJournal(journalId);
-    }
-  }, [journalId]);
+    fetchJournal();
+  }, [fetchJournal]);
 
   useEffect(() => {
     if (journal) {
