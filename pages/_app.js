@@ -4,11 +4,9 @@ import { JournalProvider } from "./JournalContext.js";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider>
-      <JournalProvider>
-        <Component {...pageProps} />
-      </JournalProvider>
-    </AuthProvider>
+    <JournalProvider>
+      <Component {...pageProps} />
+    </JournalProvider>
   );
 }
 
