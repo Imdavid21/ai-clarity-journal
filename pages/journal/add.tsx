@@ -35,14 +35,14 @@ const Add: React.FC = () => {
           <Button
             buttonText="Cancel"
             isPrimary={false}
-            onClick={handleBack}
+            handleClick={handleBack}
             type="button"
             disabled={false}
           />
           <Button
             buttonText={loading ? "Loading..." : "Next"}
             isPrimary={true}
-            onClick={() => {}}
+            handleClick={() => {}}
             disabled={loading}
             type="submit"
           />
