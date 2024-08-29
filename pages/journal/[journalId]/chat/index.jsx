@@ -3,7 +3,7 @@ import DateTitle from "@/components/common/DateTitle";
 import Header from "@/components/common/Header";
 import Button from "@/components/common/Button";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 const initialValues = {
   content: "",
@@ -17,22 +17,18 @@ const Chat = () => {
   const router = useRouter();
   const { push } = useRouter();
   const { journalId } = router.query;
-  const { userId } = useAuth();
 
-  const fetchJournal = async () => {
-    const response = await fetch(
-      `/api/users/${userId}/journal/entries/${journalId}`
-    );
+  const fetchJournal = useCallback(async () => {
+    if (!journalId) return;
+    const response = await fetch(`/api/journal/entries/${journalId}`);
     const data = await response.json();
     setJournal(data[0]);
     setEntryIndex(data[0].entries.length - 1);
-  };
+  }, [journalId]);
 
   useEffect(() => {
-    if (journalId) {
-      fetchJournal();
-    }
-  }, [journalId]);
+    fetchJournal();
+  }, [fetchJournal]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,19 +40,16 @@ const Chat = () => {
 
   const handleDigDeeper = async (e) => {
     e.preventDefault();
-    const response = await fetch(
-      `/api/users/${userId}/journal/entries/${journalId}/update`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: values.content }),
-      }
-    );
+    const response = await fetch(`/api/journal/entries/${journalId}/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: values.content }),
+    });
     setLoading(true);
 
-    if (response) {
+    if (response.ok) {
       const data = await response.json();
       setJournal(data);
       setValues(initialValues);
@@ -64,19 +57,17 @@ const Chat = () => {
     } else {
       console.error("Invalid response from createJournalEntry:", response);
     }
+    setLoading(false);
   };
 
   const finalizeJournal = async (entry, journalId) => {
-    const response = await fetch(
-      `/api/users/${userId}/journal/entries/${journalId}/finalize`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ entry }),
-      }
-    );
+    const response = await fetch(`/api/journal/entries/${journalId}/finalize`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ entry }),
+    });
 
     return response.json();
   };
@@ -95,6 +86,8 @@ const Chat = () => {
       }
     } catch (error) {
       console.error(`ERROR ${error}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,4 +130,5 @@ const Chat = () => {
     </div>
   );
 };
+
 export default Chat;
