@@ -1,3 +1,4 @@
+/*
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -33,3 +34,4 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => useContext(AuthContext);
 
 export default AuthProvider;
+*/
