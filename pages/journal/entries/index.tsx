@@ -53,7 +53,7 @@ const Entries: React.FC = () => {
 
         const grouped = data.reduce((acc: GroupedJournals, journal) => {
           const date = new Date(journal.date);
-          const year = date.getFullYear().toString();
+          const year = date.getFullYear();
           const month = date.toLocaleString("default", { month: "short" });
 
           if (!acc[year]) acc[year] = {};
@@ -70,8 +70,6 @@ const Entries: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching journals:", error);
-      setJournals([]);
-      setGroupedJournals({});
     }
   };
 
