@@ -1,5 +1,5 @@
 import React from "react";
-import "@/styles/global.css";
+import "@/app/globals.css";
 import { AuthProvider } from "@/AuthContext";
 import { JournalProvider } from "@/JournalContext";
 
