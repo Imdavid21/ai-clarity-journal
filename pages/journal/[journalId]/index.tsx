@@ -40,7 +40,6 @@ const PastEntry: React.FC = () => {
   const [journal, setJournal] = useState<Journal | null>(null);
   const router = useRouter();
   const { journalId } = router.query as { journalId: string }; // Adding type assertion
-  const { userId } = useAuth();
 
   function formatJournalEntry(entry: string): JSX.Element[] {
     entry = entry.replace(/:/g, ":<br/>");
@@ -54,14 +53,19 @@ const PastEntry: React.FC = () => {
 
   useEffect(() => {
     const fetchJournal = async () => {
-      const response = await axios.get(
-        `/api/users/${userId}/journal/entries/${journalId}`
-      );
-      const data: Journal[] = response.data;
-      setJournal(data[0]);
+      try {
+        const response = await axios.get(`/api/journals/${journalId}`);
+        const data: Journal[] = response.data;
+        setJournal(data[0]);
+      } catch (error) {
+        console.error(error);
+      }
     };
-    fetchJournal();
-  }, [journalId, userId]);
+
+    if (journalId) {
+      fetchJournal();
+    }
+  }, [journalId]);
 
   const tabs: Tab[] = [
     {
