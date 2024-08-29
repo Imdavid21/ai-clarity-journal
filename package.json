@@ -37,7 +37,7 @@
     "typescript": "^5.5.4"
   },
   "eslintConfig": {
-    "extends": "next",
+    "extends": ["next", "next/core-web-vitals"],
     "rules": {
       "no-unused-vars": [
         "warn",
@@ -45,7 +45,9 @@
           "argsIgnorePattern": "^_",
           "varsIgnorePattern": "^_"
         }
-      ]
+      ],
+      "react/jsx-no-undef": "error",
+      "react-hooks/exhaustive-deps": "warn"
     }
   }
 }
