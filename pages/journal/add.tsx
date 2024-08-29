@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useContext, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect, useContext, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { JournalContext } from "../JournalContext.js";
 import Image from "next/image";
@@ -33,9 +33,6 @@ const Add: React.FC = () => {
 
   const [entriesAsString, setEntriesAsString] = useState<Entry>({ content: "" });
   const router = useRouter();
-  const { userId } = useAuth();
-  const { push } = useRouter();
-
 
   useEffect(() => {
     const initialAnswers = journalPrompts.reduce((acc: Answers, _: string, index: number) => {
@@ -66,7 +63,7 @@ const Add: React.FC = () => {
       try {
         const response = await createJournalEntry(entriesString);
         if (response && response.journalId) {
-          push(`/journal/${response.journalId}/chat`);
+          router.push(`/journal/${response.journalId}/chat`);
         } else {
           console.error("Invalid response from createJournalEntry:", response);
         }
@@ -97,7 +94,7 @@ const Add: React.FC = () => {
 
   const createJournalEntry = async (entriesString: string) => {
     try {
-      const response = await fetch(`/api/users/${userId}/journal/entries`, {
+      const response = await fetch(`/api/journal/entries`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -112,7 +109,7 @@ const Add: React.FC = () => {
     }
   };
 
-  const handleBack = (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
+  const handleBack = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     router.back();
   };
