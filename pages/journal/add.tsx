@@ -1,12 +1,13 @@
-import React, { useState, FormEvent } from "react";
-import { useRouter } from "next/router";
-import Button from "@/components/common/Button";
+import "../../styles/global.css";
 import DateTitle from "@/components/common/DateTitle";
 import Header from "@/components/common/Header";
-import "../../styles/global.css";
+import Button from "@/components/common/Button";
+import { useRouter } from "next/router";
+import React, { useState, ChangeEvent } from "react";
 
 const initialValues = {
-  content: "",
+  title: "",
+  emoji: "",
 };
 
 const Add: React.FC = () => {
@@ -19,7 +20,7 @@ const Add: React.FC = () => {
     router.back();
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setValues({
       ...values,
@@ -27,22 +28,22 @@ const Add: React.FC = () => {
     });
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await fetch('/api/journal/entries', {
-        method: 'POST',
+      const response = await fetch("/api/journal/entries", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ content: values.content }),
+        body: JSON.stringify(values),
       });
 
       if (response.ok) {
         const data = await response.json();
-        router.push(`/journal/${data.id}/chat`);
+        router.push(`/journal/${data._id}/chat`);
       } else {
         console.error("Failed to create journal entry");
       }
@@ -59,14 +60,22 @@ const Add: React.FC = () => {
       <DateTitle />
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div>
-          <h3 className="font-semibold">Journal</h3>
-          <textarea
-            className="border border-inherit rounded-lg h-64 w-full mt-2 px-4 py-2 max-w-prose"
-            placeholder="Write something here..."
+          <input
+            className="border border-inherit rounded-lg h-14 w-full mt-2 px-4 py-2"
+            placeholder="Give your clarity a title..."
             onChange={handleInputChange}
-            value={values.content}
-            name="content"
-          ></textarea>
+            value={values.title}
+            name="title"
+          />
+        </div>
+        <div>
+          <input
+            className="border border-inherit rounded-lg h-14 w-full mt-2 px-4 py-2"
+            placeholder="Insert an emoji..."
+            onChange={handleInputChange}
+            value={values.emoji}
+            name="emoji"
+          />
         </div>
         <div className="flex justify-between mt-4 relative bottom-6 w-full -left-6 lg:max-w-screen-md lg:bottom-4 lg:relative lg:mx-auto">
           <Button
@@ -79,6 +88,7 @@ const Add: React.FC = () => {
           <Button
             buttonText={loading ? "Loading..." : "Next"}
             isPrimary={true}
+            handleClick={() => {}}
             type="submit"
             disabled={loading}
           />
