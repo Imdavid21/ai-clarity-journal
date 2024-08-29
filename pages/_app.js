@@ -1,12 +1,15 @@
 import React from "react";
-import "../styles/global.css";
-import { JournalProvider } from "./JournalContext.js";
+import "../styles/globals.css";
+import { AuthProvider } from "../context/AuthContext";
+import { JournalProvider } from "../context/JournalContext";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <JournalProvider>
-      <Component {...pageProps} />
-    </JournalProvider>
+    <AuthProvider>
+      <JournalProvider>
+        <Component {...pageProps} />
+      </JournalProvider>
+    </AuthProvider>
   );
 }
 
