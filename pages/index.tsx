@@ -38,45 +38,16 @@ export default function Home() {
   const flexCenter = "flex justify-center items-center";
   const [journal, setJournal] = useState<Journal | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const { userId, token } = useAuth() as { userId: string; token: string };
 
+  // Example: Fetching static data or removing the fetchUser and fetchLatestJournal functions.
   useEffect(() => {
-    if (userId) {
-      fetchUser(userId);
-      fetchLatestJournal(userId);
-    }
-  }, [token, userId]);
+    // If fetching static data:
+    // setUser({ name: "John Doe", username: "john", email: "john@example.com", journals: [] });
+    // setJournal({ title: "Sample Journal", date: "2024-08-29", user: "John Doe", entries: [] });
 
-  const fetchUser = async (userId: string) => {
-    try {
-      const response = await axios.get<User[]>(`/api/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUser(response.data[0] || null);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchLatestJournal = async (userId: string) => {
-    try {
-      const response = await axios.get<Journal[]>(`/api/users/${userId}/journals`);
-      const data = response.data;
-      if (data.length > 0) {
-        const sortedJournals = data
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 7);
-        setJournal(sortedJournals[0] || null);
-      } else {
-        setJournal(null);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+    // Or if removing:
+    // Remove these calls entirely if no longer needed.
+  }, []);
 
   return (
     <main className="mx-6 mt-10 pb-8">
@@ -149,9 +120,4 @@ export default function Home() {
           <InboxNav />
         </section>
       </section>
-      <nav className="sticky bottom-4 lg:absolute lg:w-full lg:mx-auto lg:bottom-6">
-        <BottomNav />
-      </nav>
-    </main>
-  );
-}
+      <nav className="sticky bottom-4 lg:absolute lg:w-full lg:mx-auto lg
