@@ -1,7 +1,7 @@
 import React from "react";
 import "@/styles/global.css";
 import { AuthProvider } from "@/AuthContext";
-import { JournalProvider } from "@/pages/JournalContext";
+import { JournalProvider } from "@/JournalContext";
 
 function MyApp({ Component, pageProps }) {
   return (
