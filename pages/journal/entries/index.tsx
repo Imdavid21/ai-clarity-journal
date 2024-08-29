@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import BottomNav from "@/components/common/BottomNav";
 import Header from "@/components/common/Header";
-import { useAuth } from "../../AuthContext.js";
 import axios from 'axios';
 import ToggleEntry from "@/components/common/ToggleEntry";
 import Entry from "@/components/common/Entry";
