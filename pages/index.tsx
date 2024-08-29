@@ -39,14 +39,9 @@ export default function Home() {
   const [journal, setJournal] = useState<Journal | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
-  // Example: Fetching static data or removing the fetchUser and fetchLatestJournal functions.
+  // Optionally, you can remove the useEffect or keep it for other logic
   useEffect(() => {
-    // If fetching static data:
-    // setUser({ name: "John Doe", username: "john", email: "john@example.com", journals: [] });
-    // setJournal({ title: "Sample Journal", date: "2024-08-29", user: "John Doe", entries: [] });
-
-    // Or if removing:
-    // Remove these calls entirely if no longer needed.
+    // Add your logic here or remove it if no longer needed
   }, []);
 
   return (
@@ -120,4 +115,9 @@ export default function Home() {
           <InboxNav />
         </section>
       </section>
-      <nav className="sticky bottom-4 lg:absolute lg:w-full lg:mx-auto lg
+      <nav className="sticky bottom-4 lg:absolute lg:w-full lg:mx-auto lg:bottom-6">
+        <BottomNav />
+      </nav>
+    </main>
+  );
+}
