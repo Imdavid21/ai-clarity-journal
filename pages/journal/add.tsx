@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useContext, ChangeEvent } from "react";
+import React, { useState, useEffect, useContext, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { JournalContext } from "../JournalContext.js";
 import Image from "next/image";
@@ -17,11 +17,11 @@ const Add: React.FC = () => {
     router.back();
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     // Your submission logic here
-    // Don't forget to set loading back to false when done
+    // ...
     setLoading(false);
   };
 
@@ -42,9 +42,8 @@ const Add: React.FC = () => {
           <Button
             buttonText={loading ? "Loading..." : "Next"}
             isPrimary={true}
-            handleClick={handleSubmit}
-            disabled={loading}
             type="submit"
+            disabled={loading}
           />
         </div>
       </form>
